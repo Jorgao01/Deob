@@ -1,0 +1,28 @@
+# render.yaml — configuração para Render.com
+# Tipo: Background Worker (não precisa de porta HTTP, ideal para bots Discord)
+# Free tier: 750h/mês, suficiente para 1 bot rodando 24/7
+
+services:
+  - type: worker                  # Background Worker, não Web Service
+    name: prometheus-deob-bot
+    runtime: docker               # usa o Dockerfile
+    dockerfilePath: ./Dockerfile
+    plan: free                    # plano gratuito
+
+    # ── variáveis de ambiente ────────────────────────────────────────────────
+    # DISCORD_TOKEN é segredo — defina no painel do Render, não aqui!
+    envVars:
+      - key: LUA_BIN
+        value: lua5.1
+      - key: CLI_PATH
+        value: ./deob/cli.lua
+      - key: MAX_FILE_KB
+        value: "512"
+      - key: DEOB_TIMEOUT
+        value: "60"
+      # Para sincronizar slash commands rapidamente numa guild específica:
+      # - key: GUILD_IDS
+      #   value: "SEU_GUILD_ID_AQUI"
+
+    # ── build ────────────────────────────────────────────────────────────────
+    autoDeploy: true              # re-deploya ao fazer push no GitHub
